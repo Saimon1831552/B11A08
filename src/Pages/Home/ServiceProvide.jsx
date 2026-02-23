@@ -1,91 +1,87 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 const ServiceProvide = () => {
-    const [doctor, setDoctor] = useState(0);
-    const [review, setReview] = useState(0);
-    const [patient, setPatient] = useState(0);
-    const [staff, setStaff] = useState(0); 
+    const [counts, setCounts] = useState({
+        doctor: 0,
+        review: 0,
+        patient: 0,
+        staff: 0
+    });
     
     const [isVisible, setIsVisible] = useState(false);
-    
     const sectionRef = useRef(null);
 
-    const totalDoctors = 199;
-    const totalReview = 467;
-    const totalPatients = 1900;
-    const totalStaff = 300;
+    const targets = {
+        doctor: 199,
+        review: 467,
+        patient: 1900,
+        staff: 300
+    };
 
+    
     useEffect(() => {
-        const checkVisibility = new IntersectionObserver(
-            ([check])=>{
-                if (check.isIntersecting) {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
                     setIsVisible(true);
                 }
-            }, {threshold: 0.3}
-        )
+            }, { threshold: 0.3 }
+        );
 
-        if(sectionRef.current){
-            checkVisibility.observe(sectionRef.current);
-        }
-        else{
-            checkVisibility.disconnect();
-        }
+        if (sectionRef.current) observer.observe(sectionRef.current);
+        return () => observer.disconnect();
     }, []);
 
+    
     useEffect(() => {
-        if (
-            !isVisible || 
-            (doctor >= totalDoctors && review >= totalReview && patient >= totalPatients && staff >= totalStaff)
-        ) {
-            return;
-        }
+        if (!isVisible) return;
 
-        let currentSpeed = 1;
-        if (doctor < 5 && review < 5 && patient < 5 && staff < 5) {
-            currentSpeed = 200;
-        }
+        const duration = 6000; 
+        const startTime = performance.now();
 
-        const interval = setInterval(() => {
-            setDoctor(prev => ((prev<totalDoctors) ? prev+1 : prev));
-            setReview(prev => ((prev<totalReview)? prev+1 : prev));
-            setPatient(prev => ((prev<totalPatients) ? prev+1 : prev));
-            setStaff(prev => ((prev<totalStaff) ? prev+1 : prev));
-        }, currentSpeed);
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
 
-        return () => clearInterval(interval);
-    }, [doctor, review, patient, staff, isVisible]); 
+            const easeProgress = 1 - (1 - progress) * (1 - progress);
+
+            setCounts({
+                doctor: Math.floor(easeProgress * targets.doctor),
+                review: Math.floor(easeProgress * targets.review),
+                patient: Math.floor(easeProgress * targets.patient),
+                staff: Math.floor(easeProgress * targets.staff),
+            });
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }, [isVisible]);
+
+    const stats = [
+        { label: 'Total Doctors', value: counts.doctor, icon: "https://i.ibb.co.com/tMwdXjL3/fi-15536380.png" },
+        { label: 'Total Reviews', value: counts.review, icon: "https://i.ibb.co.com/Kx6jyvp4/fi-7804340.png" },
+        { label: 'Patients', value: counts.patient, icon: "https://i.ibb.co.com/NdsW8M3s/fi-2854545.png" },
+        { label: 'Total Staff', value: counts.staff, icon: "https://i.ibb.co.com/2m12yMQ/fi-3160069.png" },
+    ];
 
     return (
-        <section ref={sectionRef} className='mb-10 mx-24'>
+        <section ref={sectionRef} className='mb-10 px-4 md:mx-24'>
             <h1 className='text-center text-4xl font-extrabold mt-10'>We Provide Best Medical Services</h1>
-            <p className='text-center text-gray-700 text-sm mt-3 mb-5'>
-                Our platform connects you with verified, experienced doctors across various specialties — all at your convenience.
+            <p className='text-center text-gray-700 text-sm mt-3 mb-10'>
+                Our platform connects you with verified, experienced doctors across various specialties.
             </p>
 
-            <div className='flex flex-row justify-between items-center'>
-                <div className='flex flex-col rounded-xl px-12 py-8 gap-3.5 bg-white'>
-                    <img className='w-14 h-14 object-cover' src="https://i.ibb.co.com/tMwdXjL3/fi-15536380.png" alt="Doctors icon" />
-                    <p className='text-black text-5xl font-extrabold'>{doctor}+</p>
-                    <p className='text-gray-400 text-2xl font-bold'>Total Doctors</p>
-                </div>
-
-                <div className='flex flex-col gap-3.5 rounded-xl px-12 py-8 bg-white'>
-                    <img className='w-14 h-14 object-cover' src="https://i.ibb.co.com/Kx6jyvp4/fi-7804340.png" alt="Reviews icon" />
-                    <p className='text-black text-5xl font-extrabold'>{review}+</p>
-                    <p className='text-gray-400 text-2xl font-bold'>Total Reviews</p>
-                </div>
-
-                <div className='flex flex-col gap-3.5 rounded-xl px-12 py-8 bg-white'>
-                    <img className='w-14 h-14 object-cover' src="https://i.ibb.co.com/NdsW8M3s/fi-2854545.png" alt="Patients icon" />
-                    <p className='text-black text-5xl font-extrabold'>{patient}+</p>
-                    <p className='text-gray-400 text-2xl font-bold'>Patients</p>
-                </div>
-
-                <div className='flex flex-col gap-3.5 rounded-xl px-12 py-8 bg-white'>
-                    <img className='w-14 h-14 object-cover' src="https://i.ibb.co.com/2m12yMQ/fi-3160069.png" alt="Staff icon" />
-                    <p className='text-black text-5xl font-extrabold'>{staff}+</p>
-                    <p className='text-gray-400 text-2xl font-bold'>Total Staff</p>
-                </div>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+                {stats.map((stat, index) => (
+                    <div key={index} className='flex flex-col items-center lg:items-start rounded-xl px-12 py-8 gap-3.5 bg-white shadow-sm'>
+                        <img className='w-14 h-14 object-cover' src={stat.icon} alt={stat.label} />
+                        <p className='text-black text-5xl font-extrabold'>{stat.value}+</p>
+                        <p className='text-gray-400 text-2xl font-bold'>{stat.label}</p>
+                    </div>
+                ))}
             </div>
         </section>
     );
