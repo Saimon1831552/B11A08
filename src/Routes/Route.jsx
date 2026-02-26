@@ -15,12 +15,14 @@ export const Route = createBrowserRouter([
                 index: true,
                 path:"/",
                 loader:()=>fetch('../../public/doctor.json'),
-                Component: Home
+                Component: Home,
+                hydrateFallbackElement: null
             },
             {
                 path:"/booking",
                 loader:()=>fetch('../../public/doctor.json'),
-                Component: Booking
+                Component: Booking,
+                hydrateFallbackElement: null
             },
             {
                 path:"/blogs",

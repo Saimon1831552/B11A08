@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { NavLink } from 'react-router';
 
 const Doctor = ({doctor}) => {
@@ -7,6 +8,9 @@ const Doctor = ({doctor}) => {
 
     return (
         <div className="p-4">
+            <Helmet>
+                <title>{name} - Doctor Profile</title>
+            </Helmet>
             <div className='w-full max-w-sm bg-white rounded-2xl flex flex-col shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 overflow-hidden'>
                 
                 <div className='w-full h-64 overflow-hidden bg-gray-100'>

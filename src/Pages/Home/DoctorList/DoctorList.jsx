@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import Doctor from '../Doctor/Doctor';
+import { Helmet } from 'react-helmet-async';
 
 
 const DoctorList = ({ doctors }) => { 
@@ -16,6 +17,9 @@ const DoctorList = ({ doctors }) => {
 
     return (
         <section className='py-10'>
+            <Helmet>
+                <title>Doctor List - Our Best Doctors</title>
+            </Helmet>
             <div className='flex flex-col justify-center items-center gap-10'>
                 <div>
                     <h1 className='text-center text-4xl font-bold'>Our Best Doctors</h1>

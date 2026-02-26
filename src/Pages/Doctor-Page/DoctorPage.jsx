@@ -10,7 +10,8 @@ const DoctorPage = () => {
     
 
 const handleBookingClick = () => {
-        const savedBookings = JSON.parse(localStorage.getItem('doctorBookings')) || [];
+        const rawData = localStorage.getItem('doctorBookings');
+        const savedBookings = Array.isArray(JSON.parse(rawData)) ? JSON.parse(rawData) : [];
 
         const isAlreadyBooked = savedBookings.some(item => item.id === doctor.id);
 
